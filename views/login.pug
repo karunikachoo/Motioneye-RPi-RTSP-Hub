@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title= title
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src="https://www.google.com/recaptcha/api.js" async defer)
+  body
+    div.login-form
+      h1 Sign in with your username and password
+      h4#err= msg
+      form#demo-form(action="login", method="POST")
+        input(type="text", name="username", placeholder="Username", required)
+        input(type="password", name="password", placeholder="Password", required)
+        button.g-recaptcha(data-sitekey=recaptchaSiteKey, data-callback='onSubmit', data-action='submit') Submit
+  script.
+    function onSubmit(token) {
+      document.getElementById("demo-form").submit();
+    }

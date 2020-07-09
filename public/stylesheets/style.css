@@ -1,0 +1,320 @@
+body {
+  background: #1f2334;
+  color: #fff;
+  padding: 0;
+  margin: 0;
+  font: 1.3rem 'Source Sans Pro', sans-serif;
+  font-weight: 300;
+}
+
+a {
+  color: #00B7FF;
+  text-decoration: none;
+}
+
+h4#err {
+  color: #ff0000;
+}
+
+input, button.g-recaptcha {
+  color: #454f63;
+  background: #fff;
+  font-size: 1.3rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  outline: none;
+  border: none;
+  display: block;
+  margin: 1rem 0;
+}
+
+.login-form {
+  width: 300px;
+  max-width: 300px;
+  margin: 0 auto;
+  /*font-family: Tahoma, Geneva, sans-serif;*/
+}
+.login-form h1 {
+  text-align: center;
+  color: #fff;
+  font-size: 24px;
+  padding: 20px 0 20px 0;
+}
+.login-form input[type="password"],
+.login-form input[type="text"], input {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #dddddd;
+  margin-bottom: 15px;
+  box-sizing:border-box;
+}
+.login-form input[type="submit"], button.g-recaptcha, button.sub {
+  border-radius: 0.5rem;
+  width: 100%;
+  padding: 15px;
+  background-color: #535b63;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-weight: 300;
+  color: #ffffff;
+  margin-top: 0.5rem;
+}
+
+button.red {
+  background: #891515 !important;
+}
+
+.wrapper {
+  width: 500px;
+  max-width: 500px;
+  margin: 0 auto;
+  /*font-family: Tahoma, Geneva, sans-serif;*/
+  padding-bottom: 5rem;
+}
+
+.wrapper h1 {
+  text-align: center;
+  color: #fff;
+  font-size: 24px;
+  padding: 20px 0 20px 0;
+}
+
+.bar-top {
+  color: #fff;
+  padding: 1rem;
+  margin: 1rem 0;
+  width: 100%;
+  text-transform: uppercase;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.camera-container, .container {
+  background: #161821;
+  padding: 1rem;
+  border-radius: .5rem;
+  margin-bottom: 1rem;
+}
+
+.title {
+  width: 100%;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+img.camera {
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+.fullscreen-overlay {
+  background: #4b5068;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateY(100%);
+  transition: all 500ms;
+}
+
+.fullscreen-overlay.show {
+  transform: translateY(0);
+  transition: all 500ms;
+}
+
+.fullscreen-overlay .close {
+  padding: 1rem 1rem;
+  cursor: pointer;
+}
+
+.user-card {
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #333;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  -webkit-box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.75);
+}
+
+.user-card .username {
+  font-weight: 400;
+  font-size: 1.8rem;
+  color: #333;
+  padding-left: 0.5rem;
+  /*margin-bottom: 1rem;*/
+}
+
+.inner {
+  padding: 0.5rem 1.5rem;
+}
+
+.inner-inline {
+  display: inline-block;
+  padding-right: 1rem;
+}
+
+.inner-title {
+  padding-left: 0.5rem;
+}
+
+
+.switch {
+  background: #ddd;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.25rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.switch.on {
+  background: #00B7FF;
+  color: #fff;
+}
+
+button.light {
+  background: #eee;
+  color: #333;
+}
+
+select {
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.usercam-container {
+  margin-bottom: 1rem;
+}
+
+button.small {
+  padding: 0.5rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-weight: 300;
+  color: #ffffff;
+  float: right;
+}
+
+button.light-red {
+  background: #f35454 !important;
+  color: #fff;
+}
+
+#logout {
+  margin-top: 4rem;
+}
+
+.sub#blackout {
+  background: #111;
+}
+
+.sub#restore {
+  background: chartreuse;
+}
+
+.sub#restart-cam {
+  margin-top: 1.5rem;
+}
+
+#record-audio {
+  background: #f35454;
+  transition: all 500ms;
+}
+
+/*
+ * Author: http://stuffandnonsense.co.uk/blog/about/hardboiled_css3_media_queries/
+ */
+
+/* Smartphones (portrait) ----------- */
+@media only screen
+and (max-width : 500px) {
+  .login-form {
+    width: 95%;
+    max-width: 95%;
+  }
+
+  .wrapper {
+    width:  95%;
+    max-width: 95%;
+  }
+}
+
+/* iPads (landscape) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : landscape) {
+  .login-form {
+    width: 300px;
+    max-width: 300px;
+  }
+
+  .wrapper {
+    width:  500px;
+    max-width: 500px;
+  }
+}
+
+/* iPads (portrait) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+  .login-form {
+    width: 300px;
+    max-width: 300px;
+  }
+
+  .wrapper {
+    width:  500px;
+    max-width: 500px;
+  }
+}
+
+/* Desktops and laptops ----------- */
+@media only screen
+and (min-width : 1224px) {
+  .login-form {
+    width: 300px;
+    max-width: 300px;
+  }
+
+  .wrapper {
+    width:  500px;
+    max-width: 500px;
+  }
+}
+
+/* Large screens ----------- */
+@media only screen
+and (min-width : 1824px) {
+  .login-form {
+    width: 300px;
+    max-width: 300px;
+  }
+
+  .wrapper {
+    width:  500px;
+    max-width: 500px;
+  }
+}
+
+/* iPhone 4 ----------- */
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+  .login-form {
+    width: 95%;
+    max-width: 95%;
+  }
+}

@@ -1,0 +1,232 @@
+doctype html
+html
+    head
+        title= title
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src='/javascripts/socket.io.js')
+        script.
+            let socket = io();
+
+            socket.on('identify', () => {
+                socket.emit('identify', 'client');
+            });
+    body
+        section.wrapper
+            h1 #{username} @ Dashboard
+
+            h1 Cameras
+
+            each cam in cams
+                div.camera-container
+                    div.title= cam.name
+                    img.camera(id=cam.token)
+                    div.title= cam.url
+                    div Camera FPS
+                    input(id='fps_' + cam.uuid, type='number', name='fps', value=cam.fps != null ? cam.fps: 1, min=1, max=10)
+                    form(id='form_' + cam.uuid, action='remove_cam', method='POST')
+                        input(type='hidden', name='uuid', value=cam.uuid)
+                        button.sub.red(id='btn_' + cam.uuid) Delete
+
+                    script.
+                        console.log(document.cookie);
+                        document.getElementById('fps_!{cam.uuid}').onchange = (e) => {
+                            socket.emit('update_fps', {
+                                uid: '!{cam.uuid}',
+                                fps: Number.parseFloat(e.target.value)
+                            })
+                        };
+                        document.getElementById('btn_!{cam.uuid}').onclick = (e) => {
+                            e.preventDefault();
+                            let res = confirm("Are you sure you want to delete !{cam.name}");
+                            if (res) {
+                                document.getElementById('form_!{cam.uuid}').submit()
+                            }
+                        }
+                        socket.on('!{cam.token}', frame => {
+                            socket.emit('keep-alive', '!{cam.token}', '!{cam.uuid}');
+                            document.getElementById('!{cam.token}').setAttribute('src', 'data:image/jpg;base64,' + frame);
+                        });
+
+            button.sub#add-cam + Camera
+            form(action='restart_cam', method='POST')
+                button.sub#restart-cam Restart Camera Streams
+            if blackout
+                form(action='blackout-restore', method='POST')
+                    button.sub#restore RESTORE
+            else
+                form(action='blackout', method='POST')
+                    button.sub#blackout BLACKOUT
+
+            h1 Users
+
+            each user in users
+                div.user-card
+                    div.username= user.username
+                    div.inner
+                        div.inner-inline
+                            form(id='admin_form_' + user.username, action='update_user_access', method='POST')
+                                input(type='hidden', name='username', value=user.username)
+                                input(type='hidden', name='admin', value=user.admin)
+                            if user.admin
+                                div.switch.on(id='admin_' + user.username) Admin
+                            else
+                                div.switch(id='admin_' + user.username) Admin
+                        div.inner-inline
+                            form(id='audio_form_' + user.username, action='update_user_audio', method='POST')
+                                input(type='hidden', name='username', value=user.username)
+                                input(type='hidden', name='audio', value=user.audio)
+                            if user.audio
+                                div.switch.on(id='audio_' + user.username) Audio
+                            else
+                                div.switch(id='audio_' + user.username) Audio
+                    div.inner-title Cameras
+                        div.inner
+                            for ucam in user.cameras
+                                form(id='user_cam_form_' + ucam.uuid + user.username, action='remove_user_cam', method='POST')
+                                    input(type='hidden', name='username', value=user.username)
+                                    input(type='hidden', name='cam_id', value=ucam.uuid)
+                                div.usercam-container= ucam.name
+                                    button.small.light-red(id='user_cam_del_' + ucam.uuid + user.username) Remove
+                                script.
+                                    document.getElementById('user_cam_del_!{ucam.uuid + user.username}').onclick = (e) => {
+                                        document.getElementById('user_cam_form_!{ucam.uuid + user.username}').submit();
+                                    }
+                            button.sub.light(id='add_cam_' + user.username) Add Camera
+                    button.sub(id='edit_' + user.username) Edit
+                    if user.username !== username
+                        form(id='form_' + user.username, action='remove_user', method='POST')
+                            input(type='hidden', name='username', value=user.username)
+                            button.sub.red(id='btn_' + user.username) Delete
+
+                    script.
+                        document.getElementById('admin_!{user.username}').onclick = (e) => {
+                            let aForm = document.getElementById('admin_form_!{user.username}');
+                            aForm.querySelector("input[name='admin']").value = !{!user.admin};
+                            aForm.submit();
+                        }
+                        document.getElementById('audio_!{user.username}').onclick = (e) => {
+                            let aForm = document.getElementById('audio_form_!{user.username}');
+                            aForm.querySelector("input[name='audio']").value = !{!user.audio};
+                            aForm.submit();
+                        }
+                        document.getElementById('edit_!{user.username}').onclick = (e) => {
+                            document.getElementById('edit-user-overlay').querySelector('h1').innerText = 'Change Password for !{user.username}';
+                            let eform = document.getElementById('edit-user-form');
+                            eform.reset();
+                            eform.querySelector('input[name=username]').value = '!{user.username}';
+                            document.getElementById('edit-user-overlay').classList.add('show');
+                        }
+                        if (document.getElementById('btn_!{user.username}')) {
+                            document.getElementById('btn_!{user.username}').onclick = (e) => {
+                                e.preventDefault();
+                                let res = confirm("Are you sure you want to delete !{user.username}");
+                                if (res) {
+                                    document.getElementById('form_!{user.username}').submit()
+                                }
+                            }
+                        }
+                        document.getElementById('add_cam_!{user.username}').onclick = (e) => {
+                            console.log(e.target);
+                            let eform = document.getElementById('add-usercam-form');
+                            eform.reset();
+                            eform.querySelector('input[name=username]').value = '!{user.username}';
+                            document.getElementById('add-usercam-overlay').classList.add('show');
+                        }
+
+            button.sub#add-user + User
+
+            h1 Logging
+
+            p= webhook != null ? webhook : 'No URL'
+            form(action='update-webhook-url', method='POST')
+                input(type="url", name='url', placeholder='New Slack Webhook URL')
+                input(type="submit")
+
+            h1 Audio Backend
+            form(action='restart-audio-backend', method='POST')
+                button.sub.red RESTART AUDIO BACKEND
+
+            form(action='logout', method='POST')
+                button.sub.red#logout Log Out
+
+        section.fullscreen-overlay#add-cam-overlay
+            div.close#add-cam-close X
+            div.wrapper
+                h1 Add MJPEG Camera Stream
+                form#add-cam-form(action="add_cam", method="POST")
+                    input(type="text", name="name", placeholder="Name" required)
+                    input(type="text", name="url", placeholder="URL http://" required)
+                    input(type="submit")
+
+        section.fullscreen-overlay#add-user-overlay
+            div.close#add-user-close X
+            div.wrapper
+                h1 Add User
+                form#add-user-form(action="add_user", method="POST")
+                    input(type="text", name="username", placeholder="Username" required)
+                    input(type="password", name="password", placeholder="Password", required)
+                    input(type="password", name="password-verify", placeholder="Re-Enter Password", required)
+                    input(type="submit")
+
+        section.fullscreen-overlay#edit-user-overlay
+            div.close#edit-user-close X
+            div.wrapper
+                h1 Change Password
+                form#edit-user-form(action="update_user", method="POST")
+                    input(type="hidden", name="username", placeholder="Username" required)
+                    input(type="password", name="password", placeholder="Password", required)
+                    input(type="password", name="password-verify", placeholder="Re-Enter Password", required)
+                    input(type="submit")
+
+        section.fullscreen-overlay#add-usercam-overlay
+            div.close#add-usercam-close X
+            div.wrapper
+                h1 Add Camera to User
+                form#add-usercam-form(action="add_user_cam", method="POST")
+                    input(type="hidden", name="username", placeholder="Username" required)
+                    select(id="cam_id" name="cam_id")
+                        for cam in cams
+                            option(value=cam.uuid)= cam.name
+                    input(type="submit")
+
+
+    script.
+        let addCamBtn = document.getElementById('add-cam');
+        let addCamOverlay = document.getElementById('add-cam-overlay');
+        addCamBtn.onclick = (evt) => {
+            document.getElementById('add-cam-form').reset();
+            addCamOverlay.classList.add("show")
+        };
+        document.getElementById('add-cam-close').onclick = (evt) => {
+            if (addCamOverlay.classList.contains('show')) {
+                addCamOverlay.classList.remove('show');
+            }
+        }
+
+        let addUserBtn = document.getElementById('add-user');
+        let addUserOverlay = document.getElementById('add-user-overlay');
+        addUserBtn.onclick = (evt) => {
+            document.getElementById('add-user-form').reset();
+            addUserOverlay.classList.add("show")
+        };
+        document.getElementById('add-user-close').onclick = (evt) => {
+            if (addUserOverlay.classList.contains('show')) {
+                addUserOverlay.classList.remove('show');
+            }
+        }
+
+        let editUserOverlay = document.getElementById('edit-user-overlay');
+        document.getElementById('edit-user-close').onclick = (evt) => {
+            if (editUserOverlay.classList.contains('show')) {
+                editUserOverlay.classList.remove('show');
+            }
+        }
+
+        let addUserCamOverlay = document.getElementById('add-usercam-overlay');
+        document.getElementById('add-usercam-close').onclick = (evt) => {
+            if (addUserCamOverlay.classList.contains('show')) {
+                addUserCamOverlay.classList.remove('show');
+            }
+        }

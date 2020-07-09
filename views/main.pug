@@ -1,0 +1,100 @@
+doctype html
+html
+    head
+        title= title
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src='/javascripts/socket.io.js')
+        script.
+            let socket = io();
+
+            socket.on('identify', () => {
+                console.log('identity Requested');
+                socket.emit('identify', 'client');
+            });
+    body
+        section.wrapper
+            h1 Hello #{username}
+            each cam in cams
+                div.camera-container
+                    div.title= cam.name
+                    img.camera(id=cam.token)
+                    script.
+                         socket.on('!{cam.token}', frame => {
+                             socket.emit('keep-alive', '!{cam.token}', '!{cam.uuid}');
+                             document.getElementById('!{cam.token}').src = 'data:image/jpg;base64,' + frame;
+                         });
+            if admin
+                a(href="/dashboard")
+                    button.g-recaptcha Go To Dashboard
+
+            if audio
+                button.sub#record-audio SPEAK
+                script.
+                    let recording = false;
+                    let curStream = null;
+                    let source = null;
+                    let processor = null;
+                    const cookie = document.cookie.split('auth=')[1].split(';')[0];
+                    console.log(cookie);
+
+                    let raudiobtn = document.getElementById('record-audio');
+                    raudiobtn.onclick = (e) => {
+                        if (recording) {
+                            socket.emit('audio-end');
+
+                            curStream.getAudioTracks()[0].stop();
+                            source.disconnect();
+                            processor.disconnect();
+                            recording = false;
+
+                            raudiobtn.classList.remove('red');
+                            raudiobtn.innerText = 'SPEAK';
+                        } else {
+
+                            navigator.mediaDevices.getUserMedia({ audio: true }).then(handleAudio);
+
+                            recording = true;
+                            raudiobtn.classList.add('red');
+                            raudiobtn.innerText = 'Recording...';
+                        }
+                    }
+
+                    const handleAudio = (stream) => {
+                        curStream = stream;
+
+                        const context = new AudioContext();
+
+                        source = context.createMediaStreamSource(stream);
+                        processor = context.createScriptProcessor(1024, 1, 1);
+
+
+                        source.connect(processor);
+                        processor.connect(context.destination);
+
+                        // let i = 0;
+                        processor.onaudioprocess = function (e) {
+                            // Do something with the data, e.g. convert it to WAV
+
+                            let left = e.inputBuffer.getChannelData(0);
+
+                            let l = left.length;
+
+                            let buf = new Int8Array(l)
+
+                            while (l--) {
+                                buf[l] = left[l] * 0xFF;    //convert to 16 bit
+                            }
+
+                            socket.emit('audio-write', {
+                                auth: cookie,
+                                buff: buf.buffer
+                            })
+                        };
+
+
+                    }
+
+            form(action='logout', method='POST')
+                button.sub.red#logout Log Out
