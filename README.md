@@ -19,6 +19,10 @@ It allows you to set up a web-facing hub that features:
 - Audio playback
     - Pretend to be the voice of god and talk through the raspberry pi to a speaker located in your home. 
 
+![homepage](https://firebasestorage.googleapis.com/v0/b/portfolio-8c0bd.appspot.com/o/images%2Fbk9gzfcsqfetu055?alt=media&token=154e749e-7744-4299-89a6-b45ecbbc8dc4)
+
+![dashboard](https://firebasestorage.googleapis.com/v0/b/portfolio-8c0bd.appspot.com/o/images%2Fpv77h0wziyppmsm6?alt=media&token=40bd84ae-fa94-42e2-b5f9-830e2d8915f2)
+
 ## Sound's great! Any Issues?
 Crypto
 
