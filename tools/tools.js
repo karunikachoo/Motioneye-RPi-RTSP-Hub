@@ -48,7 +48,7 @@ function killProcesses(grep) {
         psaux().then(list => {
             list.forEach(item => {
                 if (item.command.includes(grep)) {
-                    process.kill(Number.parseInt(item.pid), "SIGKILL");
+                    process.kill(Number.parseInt(item.pid, 10), "SIGKILL");
                     console.log(`killed ${item.pid}`);
                 }
             })

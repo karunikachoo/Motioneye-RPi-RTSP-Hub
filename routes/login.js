@@ -6,7 +6,7 @@ const TAG = "login.js:"
 /* GET home page. */
 router.get('/', function (req, res, next) {
     let msg = "";
-    switch (Number.parseInt(req.query.err)) {
+    switch (Number.parseInt(req.query.err, 10)) {
         case auth.ERRS.captchaErr:
             msg = "ERROR: Issue with Captcha. Please contact Google.";
             break;

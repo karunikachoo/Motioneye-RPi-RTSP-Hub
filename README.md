@@ -312,4 +312,36 @@ Additionally, you can install ddclient and follow the recommended setting s spec
 
 ##### FOLLOW DIRECTIONS FROM YOUR DOMAIN NAME HOSTS
 
+### SSH notifier
+If you want to be notified each time someone opens a ssh tunnel into your 
+Pi (be it yourself or a potential attacker) you can use this.
+
+But I have not checked if it will show up in `/var/log/auth.log` if 
+for some reason the attacker was able to open a `reverse shell` trough 
+a remote execution vulnerability (which I hope we don't have).
+
+From what I can see, the default Pi distribution's `netcat` does not support
+the `-e` parameter which is used to open a remote shell, but this does not rule out an attacker installing
+`ncat` (which does have support for `-e`) given a remote execution vuln.
+
+At least you will be notified and if you're close by or have some other system
+in place, you can shutdown your server before it is too late. 
+
+open up `auth/ssh_checker.py`, scroll all the way down to 
+
+```
+s = SSHChecker('/var/log/auth.log',
+                   "YOUR SLACK WEBHOOK URL HERE")
+```
+
+replace `"YOUR SLACK WEBHOOK URL HERE"` with your slack webhook URL with the quotation marks. e.g. 
+```
+s = SSHCHECKER('/var/log/auth.log',
+                "https://hooks.slack.com/services/ABCDEFGHI/ABCDEFGHIJK/ABCdEfGhIjKlmNoPqRsTuVwX"
+```
+
+then make it run perpetually with PM2.
+
+`pm2 start path_to_your_repo/auth/ssh_checker.py --interpreter=python3`
+
 ## YOU'RE SET UP! ENJOY!
