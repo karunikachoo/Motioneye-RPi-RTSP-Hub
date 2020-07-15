@@ -93,7 +93,7 @@ class CameraHandler {
             this.pythonAlive = Date.now();
         })
 
-        this.scheduler = schedule.scheduleJob('*/5 * * * * *', this.housekeeping);
+        this.scheduler = schedule.scheduleJob('*/2 * * * * *', this.housekeeping);
     }
 
     handleClientSocket(socket) {
@@ -119,7 +119,10 @@ class CameraHandler {
 
             if (this.requests.hasOwnProperty(uuid)) {
                 Object.keys(this.requests[uuid]).forEach(token => {
-                    this.io.emit(token, this.currentFrame[uuid]);
+                    this.io.emit(token, {
+                        nwatch: Object.keys(this.requests[uuid]).length,
+                        frame: this.currentFrame[uuid]
+                    });
                 })
             }
         }

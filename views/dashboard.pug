@@ -23,6 +23,7 @@ html
                     div.title= cam.name
                     img.camera(id=cam.token)
                     div.title= cam.url
+                    div.n-watchers(id='watch_' + cam.token) 0 watching
                     div Camera FPS
                     input(id='fps_' + cam.uuid, type='number', name='fps', value=cam.fps != null ? cam.fps: 1, min=1, max=10)
                     form(id='form_' + cam.uuid, action='remove_cam', method='POST')
@@ -30,6 +31,7 @@ html
                         button.sub.red(id='btn_' + cam.uuid) Delete
 
                     script.
+                        let watch = document.getElementById('watch_!{cam.token}');
                         console.log(document.cookie);
                         document.getElementById('fps_!{cam.uuid}').onchange = (e) => {
                             socket.emit('update_fps', {
@@ -44,9 +46,10 @@ html
                                 document.getElementById('form_!{cam.uuid}').submit()
                             }
                         }
-                        socket.on('!{cam.token}', frame => {
+                        socket.on('!{cam.token}', data => {
+                            watch.innerText = Number.parseInt(data.nwatch) + ' watching';
                             socket.emit('keep-alive', '!{cam.token}', '!{cam.uuid}');
-                            document.getElementById('!{cam.token}').setAttribute('src', 'data:image/jpg;base64,' + frame);
+                            document.getElementById('!{cam.token}').setAttribute('src', 'data:image/jpg;base64,' + data.frame);
                         });
 
             button.sub#add-cam + Camera

@@ -95,6 +95,19 @@ button.red {
   padding: 1rem;
   border-radius: .5rem;
   margin-bottom: 1rem;
+  position: relative;
+}
+
+
+.n-watchers {
+  font-size: 0.8rem;
+  font-weight: bold;
+  background: #00B7FF;
+  position: absolute;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  top: 1rem;
+  text-transform: uppercase;
 }
 
 .title {
@@ -230,6 +243,7 @@ button.light-red {
   background: #f35454;
   transition: all 500ms;
 }
+
 
 /*
  * Author: http://stuffandnonsense.co.uk/blog/about/hardboiled_css3_media_queries/
