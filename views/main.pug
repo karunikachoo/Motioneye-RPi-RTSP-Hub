@@ -22,9 +22,8 @@ html
                     img.camera(id=cam.token)
                     div.n-watchers(id='watch_' + cam.token) 0 watching
                     script.
-                        let watch = document.getElementById('watch_!{cam.token}');
                          socket.on('!{cam.token}', data => {
-                             watch.innerText = Number.parseInt(data.nwatch) + ' watching';
+                             document.getElementById('watch_!{cam.token}').innerText = Number.parseInt(data.nwatch) + ' watching';
                              socket.emit('keep-alive', '!{cam.token}', '!{cam.uuid}');
                              document.getElementById('!{cam.token}').src = 'data:image/jpg;base64,' + data.frame;
                          });

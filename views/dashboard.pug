@@ -31,7 +31,6 @@ html
                         button.sub.red(id='btn_' + cam.uuid) Delete
 
                     script.
-                        let watch = document.getElementById('watch_!{cam.token}');
                         console.log(document.cookie);
                         document.getElementById('fps_!{cam.uuid}').onchange = (e) => {
                             socket.emit('update_fps', {
@@ -47,7 +46,7 @@ html
                             }
                         }
                         socket.on('!{cam.token}', data => {
-                            watch.innerText = Number.parseInt(data.nwatch) + ' watching';
+                            document.getElementById('watch_!{cam.token}').innerText = Number.parseInt(data.nwatch) + ' watching';
                             socket.emit('keep-alive', '!{cam.token}', '!{cam.uuid}');
                             document.getElementById('!{cam.token}').setAttribute('src', 'data:image/jpg;base64,' + data.frame);
                         });
